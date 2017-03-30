@@ -37,11 +37,18 @@ def main(_):
 
   # Create the model
   x = tf.placeholder(tf.float32, [None, 784])
+
   W = tf.Variable(tf.zeros([784, 10]))
   b = tf.Variable(tf.zeros([10]))
+
+  # model without softmax
   y = tf.matmul(x, W) + b
 
+  # model with softmax
+  y = tf.nn.softmax(tf.matmul(x, W) + b)
+
   # Define loss and optimizer
+  # true distribution
   y_ = tf.placeholder(tf.float32, [None, 10])
 
   # The raw formulation of cross-entropy,
@@ -59,7 +66,7 @@ def main(_):
 
   sess = tf.InteractiveSession()
   tf.global_variables_initializer().run()
-  # Train
+  # Train for 1000 steps (epochs) with 100 random images
   for _ in range(1000):
     batch_xs, batch_ys = mnist.train.next_batch(100)
     sess.run(train_step, feed_dict={x: batch_xs, y_: batch_ys})
